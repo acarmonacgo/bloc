@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bloc</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    #toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 8px;
+      background: #111;
+      border-bottom: 1px solid #2a2a2a;
+      flex-wrap: wrap;
+    }
+
+    #toolbar button {
+      background: none;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      padding: 3px 7px;
+      font-size: 12px;
+      border-radius: 3px;
+      line-height: 1.4;
+      user-select: none;
+    }
+
+    #toolbar button:hover {
+      background: #2a2a2a;
+      color: #eee;
+    }
+
+    #toolbar button.active {
+      background: #333;
+      color: #fff;
+    }
+
+    .sep {
+      width: 1px;
+      height: 16px;
+      background: #2a2a2a;
+      margin: 0 4px;
+    }
+
+    #font-size {
+      background: none;
+      border: 1px solid #2a2a2a;
+      color: #aaa;
+      font-size: 12px;
+      width: 42px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      text-align: center;
+    }
+
+    #font-size:focus {
+      outline: none;
+      border-color: #444;
+      color: #eee;
+    }
+
+    #editor {
+      width: 100%;
+      height: calc(100vh - 33px);
+      padding: 24px 32px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 1.65;
+      border: none;
+      outline: none;
+      resize: none;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      caret-color: #e0e0e0;
+    }
+
+    /* Scrollbar */
+    #editor::-webkit-scrollbar { width: 6px; }
+    #editor::-webkit-scrollbar-track { background: transparent; }
+    #editor::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    #editor::-webkit-scrollbar-thumb:hover { background: #444; }
+
+    /* Selection */
+    #editor::selection, #editor *::selection {
+      background: #3a5a8a;
+    }
+  </style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button id="btn-bold" title="Negrita (Ctrl+B)"><b>B</b></button>
+  <button id="btn-italic" title="Cursiva (Ctrl+I)"><i>I</i></button>
+  <button id="btn-underline" title="Subrayado (Ctrl+U)"><u>U</u></button>
+  <button id="btn-strike" title="Tachado"><s>S</s></button>
+  <div class="sep"></div>
+  <button id="btn-ul" title="Lista sin orden">≡</button>
+  <button id="btn-ol" title="Lista ordenada">⒈</button>
+  <div class="sep"></div>
+  <button id="btn-left" title="Izquierda">⬤◁</button>
+  <button id="btn-center" title="Centrar">◁⬤▷</button>
+  <button id="btn-right" title="Derecha">▷⬤</button>
+  <div class="sep"></div>
+  <input id="font-size" type="number" value="15" min="8" max="72" title="Tamaño de fuente">
+  <div class="sep"></div>
+  <button id="btn-clear" title="Limpiar todo">✕ limpiar</button>
+</div>
+
+<div id="editor" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off"></div>
+
+<script>
+  const editor = document.getElementById('editor');
+
+  // Focus on load
+  editor.focus();
+
+  // Toolbar commands
+  function cmd(command, value = null) {
+    editor.focus();
+    document.execCommand(command, false, value);
+  }
+
+  document.getElementById('btn-bold').addEventListener('click', () => cmd('bold'));
+  document.getElementById('btn-italic').addEventListener('click', () => cmd('italic'));
+  document.getElementById('btn-underline').addEventListener('click', () => cmd('underline'));
+  document.getElementById('btn-strike').addEventListener('click', () => cmd('strikeThrough'));
+  document.getElementById('btn-ul').addEventListener('click', () => cmd('insertUnorderedList'));
+  document.getElementById('btn-ol').addEventListener('click', () => cmd('insertOrderedList'));
+  document.getElementById('btn-left').addEventListener('click', () => cmd('justifyLeft'));
+  document.getElementById('btn-center').addEventListener('click', () => cmd('justifyCenter'));
+  document.getElementById('btn-right').addEventListener('click', () => cmd('justifyRight'));
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    editor.innerHTML = '';
+    editor.focus();
+  });
+
+  // Font size
+  const fontSizeInput = document.getElementById('font-size');
+  fontSizeInput.addEventListener('change', () => {
+    const size = Math.min(72, Math.max(8, parseInt(fontSizeInput.value) || 15));
+    fontSizeInput.value = size;
+    editor.style.fontSize = size + 'px';
+  });
+
+  // Active state on toolbar buttons
+  editor.addEventListener('keyup', updateToolbar);
+  editor.addEventListener('mouseup', updateToolbar);
+  editor.addEventListener('selectionchange', updateToolbar);
+
+  function updateToolbar() {
+    document.getElementById('btn-bold').classList.toggle('active', document.queryCommandState('bold'));
+    document.getElementById('btn-italic').classList.toggle('active', document.queryCommandState('italic'));
+    document.getElementById('btn-underline').classList.toggle('active', document.queryCommandState('underline'));
+    document.getElementById('btn-strike').classList.toggle('active', document.queryCommandState('strikeThrough'));
+  }
+
+  // Tab key inserts spaces instead of leaving editor
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      cmd('insertText', '    ');
+    }
+  });
+
+  // Paste as plain text by default (Ctrl+Shift+V for rich)
+  editor.addEventListener('paste', (e) => {
+    if (!e.shiftKey) {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text/plain');
+      cmd('insertText', text);
+    }
+  });
+</script>
+</body>
+</html>
