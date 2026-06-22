@@ -1,51 +1,53 @@
 # bloc
 
-Editor de texto minimalista y amnésico. Corre localmente en el navegador. Al cerrar la pestaña, todo lo escrito desaparece.
+![bloc favicon](favicon.svg)
 
-## Requisitos
+Minimal, amnesic text editor that runs in the browser. When the tab is closed, everything written is lost.
 
-- Python 3 (viene preinstalado en macOS)
+## Requirements
 
-## Uso
+- Python 3 (preinstalled on macOS)
 
-### Arranque manual
+## Usage
+
+### Start manually
 
 ```bash
 cd ~/Desktop/repos
 python3 -m http.server 3131
 ```
 
-Luego abrí `http://localhost:3131` en el navegador.
+Then open `http://localhost:3131` in your browser.
 
-### Arranque en background
+### Run in background
 
-Para correrlo sin mantener la terminal abierta:
+To run it without keeping the terminal open:
 
 ```bash
 cd ~/Desktop/repos
 nohup python3 -m http.server 3131 &> /dev/null &
 ```
 
-Verificar que está corriendo:
+Check it's running:
 ```bash
 lsof -i :3131
 ```
 
-Detenerlo:
+Stop it:
 ```bash
 kill $(lsof -ti :3131)
 ```
 
-## Funcionalidades
+## Features
 
-- Negrita, cursiva, subrayado, tachado (`Ctrl+B` / `Ctrl+I` / `Ctrl+U`)
-- Listas ordenadas y sin orden
-- Alineación izquierda, centro, derecha
-- Control de tamaño de fuente
-- `Tab` inserta espacios en vez de salir del editor
-- `Ctrl+V` pega como texto plano; `Ctrl+Shift+V` pega con formato
-- Botón "limpiar" para vaciar el editor
+- Bold, italic, underline, strikethrough (`Ctrl+B` / `Ctrl+I` / `Ctrl+U`)
+- Ordered and unordered lists
+- Left / center / right alignment
+- Font size control
+- `Tab` inserts spaces instead of leaving the editor
+- `Ctrl+V` pastes as plain text; `Ctrl+Shift+V` pastes with formatting
+- "Clear" button to empty the editor
 
-## Recursos
+## Resources
 
-Consume menos de 1MB de RAM y 0% CPU en reposo. Apto para dejarlo corriendo 24/7.
+Uses under 1MB of RAM and 0% CPU at idle. Suitable to keep running 24/7.
