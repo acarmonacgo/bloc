@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>bloc</title>
+  <title>bloc - Text Editor</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     *, *::before, *::after {
@@ -108,22 +108,22 @@
 <body>
 
 <div id="toolbar">
-  <button id="btn-bold" title="Negrita (Ctrl+B)"><b>B</b></button>
-  <button id="btn-italic" title="Cursiva (Ctrl+I)"><i>I</i></button>
-  <button id="btn-underline" title="Subrayado (Ctrl+U)"><u>U</u></button>
-  <button id="btn-strike" title="Tachado"><s>S</s></button>
+  <button id="btn-bold" title="Bold (Ctrl+B)"><b>B</b></button>
+  <button id="btn-italic" title="Italic (Ctrl+I)"><i>I</i></button>
+  <button id="btn-underline" title="Underline (Ctrl+U)"><u>U</u></button>
+  <button id="btn-strike" title="Strikethrough"><s>S</s></button>
   <div class="sep"></div>
-  <button id="btn-ul" title="Lista sin orden">≡</button>
-  <button id="btn-ol" title="Lista ordenada">⒈</button>
+  <button id="btn-ul" title="Unordered list">≡</button>
+  <button id="btn-ol" title="Ordered list">⒈</button>
   <div class="sep"></div>
-  <button id="btn-left" title="Izquierda">⬤◁</button>
-  <button id="btn-center" title="Centrar">◁⬤▷</button>
-  <button id="btn-right" title="Derecha">▷⬤</button>
+  <button id="btn-left" title="Left align">⬅⬤</button>
+  <button id="btn-center" title="Center align">⬅⬤➡</button>
+  <button id="btn-right" title="Right align">⬤➡</button>
   <div class="sep"></div>
-  <input id="font-size" type="number" value="15" min="8" max="72" title="Tamaño de fuente">
+  <input id="font-size" type="number" value="15" min="8" max="72" title="Font size">
   <div class="sep"></div>
-  <button id="btn-clear" title="Limpiar todo">✕ limpiar</button>
-  <button id="btn-copy" title="Copiar todo (Ctrl+Shift+C)">📋 copiar</button>
+  <button id="btn-clear" title="Clear all">✕ clear</button>
+  <button id="btn-copy" title="Copy all (Ctrl+Shift+C)">📋 copy</button>
 </div>
 
 <div id="editor" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off"></div>
@@ -158,13 +158,13 @@ document.getElementById('btn-copy').addEventListener('click', () => {
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('btn-copy');
       const originalText = btn.textContent;
-      btn.textContent = '✓ copiado';
+      btn.textContent = '✓ copied';
       setTimeout(() => {
         btn.textContent = originalText;
       }, 2000);
       editor.focus();
     }).catch(() => {
-      alert('No se pudo copiar el texto');
+      alert('Failed to copy text');
     });
   });
 
