@@ -123,6 +123,7 @@
   <input id="font-size" type="number" value="15" min="8" max="72" title="Tamaño de fuente">
   <div class="sep"></div>
   <button id="btn-clear" title="Limpiar todo">✕ limpiar</button>
+  <button id="btn-copy" title="Copiar todo (Ctrl+Shift+C)">📋 copiar</button>
 </div>
 
 <div id="editor" contenteditable="true" spellcheck="false" autocorrect="off" autocapitalize="off"></div>
@@ -152,7 +153,30 @@
     editor.innerHTML = '';
     editor.focus();
   });
+document.getElementById('btn-copy').addEventListener('click', () => {
+    const text = editor.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('btn-copy');
+      const originalText = btn.textContent;
+      btn.textContent = '✓ copiado';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+      editor.focus();
+    }).catch(() => {
+      alert('No se pudo copiar el texto');
+    });
+  });
 
+  // Keyboard shortcut for copy all
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      e.preventDefault();
+      document.getElementById('btn-copy').click();
+    }
+  });
+
+  
   // Font size
   const fontSizeInput = document.getElementById('font-size');
   fontSizeInput.addEventListener('change', () => {
